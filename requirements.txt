@@ -1,0 +1,2 @@
+pydash==4.7.6
+virtualenv==16.7.9
