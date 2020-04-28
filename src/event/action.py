@@ -24,7 +24,7 @@ class Action:
         """Return True if Action can be run otherwise False."""
         return self.is_unlimited() or self.__times > self.__NEUTRAL_STATE
 
-    async def exec(self, *args, **kwargs) -> None:
+    def exec(self, *args, **kwargs) -> None:
         """Call callback was given if the action is usable."""
         if self.is_usable():
             if self.is_limited():

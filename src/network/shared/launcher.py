@@ -9,22 +9,22 @@ class launcher:
     def is_disabled(self) -> bool:
         return not self.__is_enabled
 
-    def __enable__(self, *args, **kwargs) -> None:
+    def __enable__(self) -> None:
         """Is called to run execution."""
         pass
 
-    def __disable__(self, *args, **kwargs) -> None:
+    def __disable__(self) -> None:
         """Is called to stop execution."""
         pass
 
-    def enable(self, *args, **kwargs) -> None:
+    def enable(self) -> None:
         """Enable execution."""
         if self.is_disabled:
             self.__is_enabled = True
-            self.__enable__(*args, **kwargs)
+            self.__enable__()
 
-    def disable(self, *args, **kwargs) -> None:
+    def disable(self) -> None:
         """Disable execution."""
         if self.is_enabled:
             self.__is_enabled = False
-            self.__disable__(*args, **kwargs)
+            self.__disable__()

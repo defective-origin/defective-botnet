@@ -3,6 +3,8 @@ from typing import Dict, TypeVar, Generic, Callable
 Space = TypeVar('Space')
 
 class WaterfallExecutor(Generic[Space]):
+    __scope = None # TODO: add scope
+
     def __broadcaster__(self, space: Space, *args, **kwargs) -> Callable:
         """Create next function built with execution children point."""
         pass
@@ -36,10 +38,10 @@ class WaterfallExecutor(Generic[Space]):
         """Is called all time after point is handled."""
         pass
 
-    async def exec(self, error: Exception, space: Space, *args, **kwargs) -> None:
+    async def exec(self, error: Exception, space: Space, *args, **kwargs) -> None: # TODO: remove args kwargs
         """Execute handlers."""
 
-        next = self.__broadcaster__(space, **kwargs)
+        next = self.__broadcaster__(space, *args, **kwargs)
         try:
             if error:
                 self.__error__(error, space, next)

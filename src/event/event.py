@@ -51,4 +51,5 @@ class Event(BaseEvent):
             if action.is_usable():
                 action.exec(*args, **kwargs)
                 left_actions.append(action)
+            # remove unsuable
         self.__actions = left_actions

@@ -35,6 +35,10 @@ class EventEmitter(BaseEvent):
                 del self.__events[name]
         return self
 
+    def empty(self):
+        """Remove all events."""
+        self.__events = {}
+
     def enable(self, names: str) -> EventEmitter:
         """Enable the event by the name. After that it can be emitted."""
         for name in self.__parse_names(names):

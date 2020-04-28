@@ -1,9 +1,11 @@
 from typing import Dict, Callable
-from .life_cycle import Launcher, WaterfallExecutor
+from .shared.point import Point
+from .shared.launcher import Launcher
+from .shared.executor import WaterfallExecutor
 from ..scope import Scope
 import uuid
 
-class Point(Launcher, WaterfallExecutor[Scope]):
+class Bot(Point, Launcher, WaterfallExecutor[Scope]):
     """
         Point of network. By default work as spread point.
     """
@@ -82,11 +84,6 @@ class Point(Launcher, WaterfallExecutor[Scope]):
             return self.__next[key]
 
         return None
-
-    # def has_connection(self, point: Union[Point,str]) -> bool:
-    #     """Return True if connected with point otherwise False."""
-    #     uuid = point.uuid if Point.is_point(point) else point
-    #     return uuid in self.__next or uuid in self.__prev
 
     def connect(self, point: Point) -> Point:
         """Add connection with point."""
