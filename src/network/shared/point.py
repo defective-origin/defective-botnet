@@ -118,21 +118,32 @@ class Point:
             self.__current_state = PointState.SEPARATED
 
 
-
 class RemotePoint(Point):
     """Connect to remote point."""
     @staticmethod
     def is_remote_point(point: Point) -> bool:
-        return isinstance(point, Point)
+        return isinstance(point, RemotePoint)
 
 class ExpansionPoint(Point):
     """Downloaad files with points and connect this points with current point"""
     @staticmethod
     def is_expansion_point(point: Point) -> bool:
-        return isinstance(point, Point)
+        return isinstance(point, ExpansionPoint)
 
 class NetworkPoint(Point):
     """Combine points to one network point."""
     @staticmethod
     def is_network_point(point: Point) -> bool:
-        return isinstance(point, Point)
+        return isinstance(point, NetworkPoint)
+
+class PipePoint(Point):
+    """Связывает в жёсткий конвеер"""
+    @staticmethod
+    def is_pipe_point(point: Point) -> bool:
+        return isinstance(point, PipePoint)
+
+class StarPoint(Point):
+    """Подключается с 3 соседними элементами соседних точек для отказаустойчевости"""
+    @staticmethod
+    def is_star_point(point: Point) -> bool:
+        return isinstance(point, StarPoint)
