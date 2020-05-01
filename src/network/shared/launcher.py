@@ -9,6 +9,11 @@ class launcher:
     def is_disabled(self) -> bool:
         return not self.__is_enabled
 
+    def __del__(self) -> None:
+        super().__del__()
+        if self.__is_enabled:
+            self.__disable__(self.__scope)
+
     def __enable__(self) -> None:
         """Is called to run execution."""
         pass
