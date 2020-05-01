@@ -2,7 +2,7 @@
 # TODO: work with dict, object and other, json
 # parse json becouse of json response
 # TODO: subscribe
-class Object:
+class Object: # TODO: inherit from Dict
     __data = {}
 
     def __setitem__(self, attr: str, value: Any) -> None:
@@ -36,6 +36,19 @@ class Object:
     def __len__(self) -> int:
         return len(self.__data)
 
-    def freeze(self): pass
-    def seal(self): pass
-    def clone(self, deep = True): pass
+    # def assign(self): pass
+    # def is(self): pass
+    # def isExtensible(self): pass
+    # def isFrozen(self): pass
+    # def isSealed(self): pass
+    # def observe(self): pass
+    # def preventExtensions(self): pass
+    # def unwatch(self): pass
+    # def watch(self): pass
+    # def freeze(self): pass
+    # def seal(self): pass
+    # def clone(self, deep = True): pass
+    # def items(self): pass
+    # def values(self): pass
+    # def keys(self): pass
+    # TODO: и другие свойства и методы js and python
