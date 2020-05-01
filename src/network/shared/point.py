@@ -1,3 +1,10 @@
+from typing import Union
+from uuid import uuid4
+
+class PointState:
+    CONNECTED = 'CONNECTED'
+    SEPARATED = 'SEPARATED'
+
 class Point:
     """Point of network."""
 
@@ -14,23 +21,27 @@ class Point:
         return self.__uuid
 
     @property
-    def is_separated(self) -> bool:
-        return not self.is_unseparated()
+    def is_connected(self) -> bool:
+        return bool(len(self.__connections))
 
     @property
-    def is_unseparated(self) -> bool:
-        return bool(len(self.__connections))
+    def is_separated(self) -> bool:
+        return not self.is_connected()
 
     def __init__(self, name: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.__name = name
-        self.__uuid = uuid.uuid4()
+        self.__uuid = uuid4()
         self.__next = {}
         self.__prev = {}
         self.__connections = {}
+        self.__current_state = None
 
     def __str__(self) -> str:
         return f'{self.__name}({self.__uuid})' if self.__name else self.__uuid
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
     def __eq__(self, other) -> bool:
         if Point.is_point(self):
@@ -39,81 +50,89 @@ class Point:
             return self.__uuid == other
         return NotImplemented
 
+    def __hash__(self) -> int:
+        return hash(self.__uuid)
+
     def __separated__(self) -> None:
         """Is called when point has no connections."""
         pass
 
-    def __unseparated__(self) -> None:
+    def __connected__(self) -> None:
         """Is called when point has connections."""
         pass
 
-    def has_connection(self, key: str) -> bool:
+    def has_connection(self, point: Union[Point, str]) -> bool:
         """Return True if connected with point otherwise False."""
-        return key in self.__connections
+        return point in self.__connections
 
-    def get_point(self, key: str) -> Union[Point,None]:
+    def get_point(self, uuid: str) -> Union[Point, None]:
         """Return point if there is connection with point otherwise None."""
-        if key in self.__connections.keys():
-            return self.__connections[key]
+        if uuid in self.__connections:
+            return self.__connections[uuid]
 
         return None
 
     def connect(self, point: Point) -> Point:
         """Add connection with point."""
         if not self.has_connection(point):
-            self.__connections[point.uuid] = point
-            self.__next[point.uuid] = point
-            point.__prev[self.uuid] = self
+            self.__connections[point] = point
+            self.__next[point] = point
+            point.__prev[self] = self
 
-        self.check_connections()
+            self.check_connections()
         return self
 
-    # TODO: work with name
-    def disconnect(self, point: Point) -> Point:
+    def disconnect(self, point: Union[Point, str]) -> Point:
         """Disconnect from point."""
-        if self.has_connection(point):
-            del self.__connections[point.uuid]
-            del self.__next[point.uuid]
-            del point.__prev[self.uuid]
+        if isinstance(point, str):
+            point = self.get_point(point)
 
-        self.check_connections()
+        if self.has_connection(point):
+            del self.__connections[point]
+
+            if point in self.__prev:
+                del self.__prev[point]
+                del point.__next[self]
+
+            if point in self.__next:
+                del self.__next[point]
+                del point.__prev[self]
+
+            self.check_connections()
         return self
 
     def separate(self) -> Point:
         """Disconnect from all connections."""
-        for prev_point in self.__prev.values():
-            prev_point.disconnect(self)
-
-        for next_point in self.__next.values():
-            self.disconnect(next_point)
-
-        self.__connections = {}
-        self.check_connections()
+        for point in self.__connections.values():
+            self.disconnect(point)
 
         return self
 
     def check_connections(self) -> None:
         """Check if point is connected to another point."""
-        if self.is_separated: # TODO: run just one time
+        if self.is_connected and self.__current_state != PointState.CONNECTED:
+            self.__connected__()
+            self.__current_state = PointState.CONNECTED
+        elif self.is_separated and self.__current_state != PointState.SEPARATED:
             self.__separated__()
-        else:
-            self.__unseparated__()
+            self.__current_state = PointState.SEPARATED
 
 
-
-# TODO remove all Point types
 
 class RemotePoint(Point):
+    """Connect to remote point."""
     @staticmethod
     def is_remote_point(point: Point) -> bool:
         return isinstance(point, Point)
 
 class ExpansionPoint(Point):
+    """Downloaad files with points and connect this points with current point"""
     @staticmethod
     def is_expansion_point(point: Point) -> bool:
         return isinstance(point, Point)
 
 class NetworkPoint(Point):
+    """Combine points to one network point."""
     @staticmethod
     def is_network_point(point: Point) -> bool:
         return isinstance(point, Point)

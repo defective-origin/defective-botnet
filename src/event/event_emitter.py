@@ -23,7 +23,7 @@ class EventEmitter(BaseEvent):
             self.__events[name].once(times, callback)
         return self
 
-    def off(self, names: str, callback: Union[Callable,None] = None) -> EventEmitter:
+    def off(self, names: str, callback: Union[Callable, None] = None) -> EventEmitter:
         """Remove event by the name or remove only action from event if the callback was given."""
         for name in self.__parse_names(names):
             if not self.contains(name):
@@ -53,14 +53,14 @@ class EventEmitter(BaseEvent):
                 self.__events[name].disable()
         return self
 
-    def is_enabled(self, name: str) -> Union[bool,None]:
+    def is_enabled(self, name: str) -> Union[bool, None]:
         """
             Return True if the event with given name is enabled otherwise False.
             If name is not found it returns None.
         """
         return self.__events[name].is_enabled() if self.contains(name) else None
 
-    def is_disabled(self, name: str) -> Union[bool,None]:
+    def is_disabled(self, name: str) -> Union[bool, None]:
         """
             Return True if the event with given name is disabled otherwise False.
             If name is not found it returns None.

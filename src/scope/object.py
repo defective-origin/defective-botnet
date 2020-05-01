@@ -35,3 +35,7 @@ class Object:
 
     def __len__(self) -> int:
         return len(self.__data)
+
+    def freeze(self): pass
+    def seal(self): pass
+    def clone(self, deep = True): pass

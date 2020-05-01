@@ -38,6 +38,8 @@ class WaterfallExecutor(Generic[Space]):
         """Is called all time after point is handled."""
         pass
 
+    # def build_scope(self)
+
     async def exec(self, error: Exception, space: Space, *args, **kwargs) -> None: # TODO: remove args kwargs
         """Execute handlers."""
 
