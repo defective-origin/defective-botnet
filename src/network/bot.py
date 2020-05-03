@@ -10,25 +10,11 @@ class Bot(Point, Launcher, WaterfallExecutor[Scope]):
         Point of network. By default work as spread point.
     """
 
-    def __del__(self) -> None:
-        if self.__is_enabled:
-            self.__disable__(self.__scope)
-    
-    # def __enable__(self, scope: Scope) -> None: # remove?
-    #     """Is called to run point execution."""
-    #     pass
-
-    # def __disable__(self, scope: Scope) -> None: # remove?
-    #     """Is called to stop point execution."""
-    #     pass
     # prev_scope curr_scope?
-    def __scope__(self, scope: Scope) -> Scope:
-        """Change scope for children points."""
-        return scope
-    
-    # def __separated__(self, scope: Scope) -> None:
-    #     """Is called when point has no connections."""
-    #     pass
+    # def __scope__(self, scope: Scope) -> Scope:
+    #     """Change scope for children points."""
+    #     return scope
+
     # emit life-cycle point
     def __broadcaster__(self, scope: Scope, next_points: Dict[str,Point], prev_points: Dict[str,Point]) -> Callable:
         """Create next function built with execution children point."""
@@ -36,18 +22,6 @@ class Bot(Point, Launcher, WaterfallExecutor[Scope]):
             for point in next_points.values():
                 point.exec(error)
         return next
-
-    def separate(self) -> Point:
-        """Disconnect from all connections."""
-        for prev_point in self.__prev.values():
-            prev_point.disconnect(self)
-
-        for next_point in self.__next.values():
-            self.disconnect(next_point)
-
-        # self.__separated__(self.__scope)
-
-        return self
 
     def enable(self, scope: Scope, rebuild_scope: bool = False) -> Point: # rebuild scope is insecure
         """Build scope and enable point execution."""

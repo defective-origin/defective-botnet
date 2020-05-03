@@ -69,8 +69,8 @@ class Network(Point):
     def __get_connection_point(self) -> Point:
         return self.__current_pipe if self.__current_pipe else self.__current_node
 
-# TODO: if network has name add as other network
-# TODO: if node has name add to main nodes
+# TODO: if network has name add as other network --- bad idia
+# TODO: if node has name add to main nodes --- bad idia
 
 # TODO: handle if inner network or outer one
 # TODO: change scope and add name

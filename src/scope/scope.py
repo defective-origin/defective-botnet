@@ -18,8 +18,8 @@ from uuid import uuid4
 #         self.emit(attr, self[attr], None, Operation.DELETE)
 #         super().__delattr__(attr)
 # # TODO add subscription
-
-class Scope(Object):
+# TODO: as NGXS
+class Scope(Object): # TODO: change name?
     NAME = uuid4()
     DEFAULT = None
 
@@ -38,3 +38,12 @@ class Scope(Object):
 
 # if field is simple we can subscribe with it a.field.subscribe()
 # TODO add subscription
+# TODO: subscribe
+
+    # def observe(self): pass #TODO: looking for object
+    # def unobserve(self): pass
+
+    # def unwatch(self): pass #TODO: looking for props
+    # def watch(self): pass # TODO close()
+
+    # TODO: и другие свойства и методы js and python

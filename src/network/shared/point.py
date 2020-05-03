@@ -32,9 +32,9 @@ class Point:
         super().__init__(*args, **kwargs)
         self.__name = name
         self.__uuid = uuid4()
-        self.__next = {}
-        self.__prev = {}
-        self.__connections = {}
+        self.__next = {} # TODO: если открою будет не безопасно
+        self.__prev = {} # TODO: если открою будет не безопасно
+        self.__connections = {} # TODO: если открою будет не безопасно
         self.__current_state = None
 
     def __str__(self) -> str:
@@ -125,7 +125,7 @@ class RemotePoint(Point):
         return isinstance(point, RemotePoint)
 
 class ExpansionPoint(Point):
-    """Downloaad files with points and connect this points with current point"""
+    """Downloaad files with points and connect this points with current point."""
     @staticmethod
     def is_expansion_point(point: Point) -> bool:
         return isinstance(point, ExpansionPoint)
@@ -137,13 +137,22 @@ class NetworkPoint(Point):
         return isinstance(point, NetworkPoint)
 
 class PipePoint(Point):
-    """Связывает в жёсткий конвеер"""
+    """Связывает в жёсткий конвеер."""
     @staticmethod
     def is_pipe_point(point: Point) -> bool:
         return isinstance(point, PipePoint)
 
 class StarPoint(Point):
-    """Подключается с 3 соседними элементами соседних точек для отказаустойчевости"""
+    """Подключается с 3 соседними элементами соседних точек для отказаустойчевости."""
     @staticmethod
     def is_star_point(point: Point) -> bool:
         return isinstance(point, StarPoint)
+
+class BackupPoint(Point): # TODO: is not point TODO: save as json? при этом сохраняет связи для сбора с бэкапа сети
+    """Сохраняет свое состояние куда-нибудь."""
+    @staticmethod
+    def is_backup_point(point: Point) -> bool:
+        return isinstance(point, StarPoint)
+
+
+# TODO: point.look(data) -> boold типо если вернёт False мне точно туда ненадо?
