@@ -13,14 +13,14 @@ class Trackwalker(Generic[EnvironmentType]):
         """Create next function built with execution next points."""
         pass
 
-    def __handler__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
+    def __exec__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
         """
             Is called when previous point don't raise error.
             By default call broadcast function.
         """
         next()
 
-    def __error__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
+    def __catch__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
         """
             Is called when previous point raise error.
             By default call broadcast function.
@@ -58,9 +58,9 @@ class Trackwalker(Generic[EnvironmentType]):
         next = self.__trackfinder__(environment)
         try:
             if error:
-                self.__error__(error, environment, next)
+                self.__catch__(error, environment, next)
             else:
-                self.__handler__(error, environment, next)
+                self.__exec__(error, environment, next)
         except Exception as catched_error:
             self.__failed__(catched_error, environment, next)
         else:
