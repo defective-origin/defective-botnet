@@ -3,7 +3,7 @@ from .base_event import BaseEvent
 from .action import Action
 
 class Event(BaseEvent):
-    __actions = []
+    __actions = [] # TODO:change to dict?
     __is_enabled = True
 
     def on(self, callback: Callable) -> Event:
@@ -18,7 +18,7 @@ class Event(BaseEvent):
 
     def off(self, callback: Callable) -> Event:
         """Remove actions by callback name."""
-        self.__actions = filter(self.__actions, lambda action: action == callback)
+        self.__actions = filter(lambda action: action == callback, self.__actions)
         return self
 
     def enable(self) -> Event:
@@ -51,5 +51,5 @@ class Event(BaseEvent):
             if action.is_usable():
                 action.exec(*args, **kwargs)
                 left_actions.append(action)
-            # remove unsuable
+            # TODO: remove unsuable
         self.__actions = left_actions

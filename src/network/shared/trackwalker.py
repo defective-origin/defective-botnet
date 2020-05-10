@@ -1,16 +1,15 @@
-from typing import Dict, TypeVar, Generic, Callable
+from typing import TypeVar, Generic, Callable, Union
 
 EnvironmentType = TypeVar('EnvironmentType')
-# классы обхода связей (Обходчики/надзиратели)
+
 class Trackwalker(Generic[EnvironmentType]):
-    # TODO: change name?
-    __environment = None # TODO: add environment TODO: how to connnect with point? # TODO: если открою будет не безопасно
+    __environment = None # TODO: how to connnect with point? # TODO: если открою будет не безопасно
 
     def __environment__(self, environment: EnvironmentType) -> EnvironmentType:
         """Change environment for children points."""
         return environment
 
-    def __tracker__(self, environment: EnvironmentType) -> Callable: # vs __trackfinder__
+    def __trackfinder__(self, environment: EnvironmentType) -> Callable:
         """Create next function built with execution next points."""
         pass
 
@@ -48,12 +47,15 @@ class Trackwalker(Generic[EnvironmentType]):
         if not self.__environment or rebuild:
             self.__environment__(environment)
 
-
-    # TODO: пересобирать каждый раз не хочеться и это неправильно
-    async def exec(self, error: Exception, environment: EnvironmentType = self.__environment) -> None:
+    async def exec(self, error: Exception, environment: Union[EnvironmentType, None] = None) -> None:
         """Execute handlers."""
-        # TODO: store environment or not?
-        next = self.__tracker__(environment)
+
+        if environment:
+            environment = self.__environment__(environment)
+        else:
+            environment = self.__environment
+
+        next = self.__trackfinder__(environment)
         try:
             if error:
                 self.__error__(error, environment, next)
@@ -66,22 +68,21 @@ class Trackwalker(Generic[EnvironmentType]):
         finally:
             self.__finally__(environment)
 
-class WaterfallTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
-    # def __tracker__(self, environment: EnvironmentType, next_points: Dict[str,Point], prev_points: Dict[str,Point]) -> Callable:
-    def __tracker__(self, environment: EnvironmentType) -> Callable:
-        """Create next function built with execution next points."""
-        def next(error: Exception = None):
-            for point in self._next.values():
-                point.exec(error, environment)
-        return next
+# class WaterfallTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
+#     def __tracker__(self, environment: EnvironmentType) -> Callable:
+#         """Create next function built with execution next points."""
+#         def next(error: Exception = None):
+#             for point in self._next.values():
+#                 point.exec(error, environment)
+#         return next
 
-class BroadcastTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
-    def __tracker__(self, environment: EnvironmentType) -> Callable:
-        """Create next function built with execution next points."""
-        def next(error: Exception = None):
-            for point in self._connections.values():
-                point.exec(error)
-        return next
+# class BroadcastTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
+#     def __tracker__(self, environment: EnvironmentType) -> Callable:
+#         """Create next function built with execution next points."""
+#         def next(error: Exception = None):
+#             for point in self._connections.values():
+#                 point.exec(error)
+#         return next
 
 # TODO: DOC this strategies
 # стратегии обхода

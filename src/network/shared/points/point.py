@@ -32,6 +32,7 @@ class Point:
         super().__init__(*args, **kwargs)
         self.__name = name
         self.__uuid = uuid4()
+        # TODO: connections {next, prev, all}
         self.__next = {} # TODO: если открою будет не безопасно
         self.__prev = {} # TODO: если открою будет не безопасно
         self.__connections = {} # TODO: если открою будет не безопасно
@@ -116,43 +117,5 @@ class Point:
         elif self.is_separated and self.__current_state != PointState.SEPARATED:
             self.__separated__()
             self.__current_state = PointState.SEPARATED
-
-
-class RemotePoint(Point):
-    """Connect to remote point."""
-    @staticmethod
-    def is_remote_point(point: Point) -> bool:
-        return isinstance(point, RemotePoint)
-
-class ExpansionPoint(Point):
-    """Downloaad files with points and connect this points with current point."""
-    @staticmethod
-    def is_expansion_point(point: Point) -> bool:
-        return isinstance(point, ExpansionPoint)
-
-class NetworkPoint(Point):
-    """Combine points to one network point."""
-    @staticmethod
-    def is_network_point(point: Point) -> bool:
-        return isinstance(point, NetworkPoint)
-
-class PipePoint(Point):
-    """Связывает в жёсткий конвеер."""
-    @staticmethod
-    def is_pipe_point(point: Point) -> bool:
-        return isinstance(point, PipePoint)
-
-class StarPoint(Point):
-    """Подключается с 3 соседними элементами соседних точек для отказаустойчевости."""
-    @staticmethod
-    def is_star_point(point: Point) -> bool:
-        return isinstance(point, StarPoint)
-
-class BackupPoint(Point): # TODO: is not point TODO: save as json? при этом сохраняет связи для сбора с бэкапа сети
-    """Сохраняет свое состояние куда-нибудь."""
-    @staticmethod
-    def is_backup_point(point: Point) -> bool:
-        return isinstance(point, StarPoint)
-
 
 # TODO: point.look(data) -> boold типо если вернёт False мне точно туда ненадо?
