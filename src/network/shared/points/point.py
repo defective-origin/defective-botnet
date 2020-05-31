@@ -5,6 +5,11 @@ class PointState:
     CONNECTED = 'CONNECTED'
     SEPARATED = 'SEPARATED'
 
+# class Connections: # TODO:
+#     prev = {}
+#     next = {}
+#     all = {}
+
 class Point:
     """Point of network."""
 
@@ -73,13 +78,14 @@ class Point:
 
         return None
 
-    def connect(self, point: Point) -> Point:
+    def connect(self, point: Point, max_points: int = 0) -> Point:
         """Add connection with point."""
         if not self.has_connection(point):
             self.__connections[point] = point
             self.__next[point] = point
             point.__prev[self] = self
 
+            self.strengthen(point, max_points)
             self.check_connections()
         return self
 
@@ -118,4 +124,14 @@ class Point:
             self.__separated__()
             self.__current_state = PointState.SEPARATED
 
+    def look(self, data: Any) -> bool: pass # TODO: __look__
+
+    def strengthen(self, point: Point, max_points: int) -> None:
+        """Add adjacent points to current point from given point."""
+        for point in point.__next.values()[:max_points]:
+            self.connect(point)
+
+# TODO: single exec
 # TODO: point.look(data) -> boold типо если вернёт False мне точно туда ненадо?
+# TODO: save as json? при этом сохраняет связи для сбора с бэкапа сети
+# TODO: call certain bots from the network

@@ -33,3 +33,8 @@ class launcher:
         if self.is_enabled:
             self.__is_enabled = False
             self.__disable__()
+
+    def restart(self) -> None:
+        """Restart execution."""
+        self.disable()
+        self.enable()

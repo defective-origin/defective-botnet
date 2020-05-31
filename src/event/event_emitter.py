@@ -7,6 +7,20 @@ import re
 class EventEmitter(BaseEvent):
     __events = {}
 
+    def is_enabled(self, name: str) -> Union[bool, None]:
+        """
+            Return True if the event with given name is enabled otherwise False.
+            If name is not found it returns None.
+        """
+        return self.__events[name].is_enabled() if self.contains(name) else None
+
+    def is_disabled(self, name: str) -> Union[bool, None]:
+        """
+            Return True if the event with given name is disabled otherwise False.
+            If name is not found it returns None.
+        """
+        return self.__events[name].is_disabled() if self.contains(name) else None
+
     def __parse_names(self, names: str) -> List[str]:
         """Return all names in string."""
         return re.sub(' +', ' ', names.strip()).split()
@@ -52,20 +66,6 @@ class EventEmitter(BaseEvent):
             if self.contains(name):
                 self.__events[name].disable()
         return self
-
-    def is_enabled(self, name: str) -> Union[bool, None]:
-        """
-            Return True if the event with given name is enabled otherwise False.
-            If name is not found it returns None.
-        """
-        return self.__events[name].is_enabled() if self.contains(name) else None
-
-    def is_disabled(self, name: str) -> Union[bool, None]:
-        """
-            Return True if the event with given name is disabled otherwise False.
-            If name is not found it returns None.
-        """
-        return self.__events[name].is_disabled() if self.contains(name) else None
 
     async def emit(self, names: str, *args, **kwargs) -> None:
         """Emit events by names."""

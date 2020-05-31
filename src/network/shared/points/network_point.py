@@ -43,3 +43,7 @@ class NetworkPoint(Point):
 
     def __get_connection_point(self) -> Point:
         return self.__current_pipe if self.__current_pipe else self.__current_node
+
+    def unbrunch(self): pass # TODO:
+# get point?
+# TODO: add builder functions
