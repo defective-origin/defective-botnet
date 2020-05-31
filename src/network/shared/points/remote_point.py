@@ -1,14 +1,8 @@
 from .point import Point
+from ..portal import Portal
 import socketio
 
-class Portal:
-    def __commander__(self, command: str, data: Any) -> None:
-        pass
-
-    def open(self): pass
-    def close(self): pass
-
-class RemotePoint(Point):
+class RemotePoint(Point, Portal):
     """Connect to remote point."""
     @staticmethod
     def is_remote_point(point: Point) -> bool:

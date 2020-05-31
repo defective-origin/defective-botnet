@@ -1,4 +1,4 @@
-class launcher:
+class Launcher:
     __is_enabled = False
 
     @property

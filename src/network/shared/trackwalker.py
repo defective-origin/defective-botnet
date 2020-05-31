@@ -47,7 +47,7 @@ class Trackwalker(Generic[EnvironmentType]):
         if not self.__environment or rebuild:
             self.__environment__(environment)
 
-    async def exec(self, error: Exception, environment: Union[EnvironmentType, None] = None) -> None:
+    async def exec(self, error: Union[Exception, None] = None, environment: Union[EnvironmentType, None] = None) -> None:
         """Execute handlers."""
 
         if environment:
