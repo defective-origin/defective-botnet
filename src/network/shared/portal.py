@@ -17,18 +17,13 @@ class Portal(Launcher):
     def __enable__(self):
         sio = AsyncServer()
         app = WSGIApp(sio)
-        self.__server = eventlet.wsgi.server(eventlet.listen((self.__host, self.__port)), app)
-        @sio.event
-        def connect(sid, environ):
-            print('connect ', sid)
+        address = (self.__host, self.__port)
+        self.__server = eventlet.wsgi.server(eventlet.listen(address), app)
 
-        @sio.event
-        def my_message(sid, data):
-            print('message ', data)
-
-        @sio.event
-        def disconnect(sid):
-            print('disconnect ', sid)
+        sio.on('connect', func) # TODO: add socket to portals
+        sio.on('disconnect', func) # TODO: remove socket from portals
+        sio.on('message', func) # TODO: bind to commander without sid
+        # TODO: sid
         # TODO: open server
         # TODO: reconnect socket server when it has error
         # TODO: connect with commander
@@ -36,12 +31,12 @@ class Portal(Launcher):
             portal.connect(url)
 
     def __disable__(self):
-        # TODO: close server
+        self.__server.stop()
 
         for portal in self.__portals.values():
             portal.disconnect()
 
-    def create(self, url: str) -> Portal:
+    def open(self, url: str) -> Portal:
         """Create new portal."""
         if url not in self.__portals:
             client = AsyncClient()
@@ -59,7 +54,3 @@ class Portal(Launcher):
         """Emit data through all created portals."""
         for portal in self.__portals.values():
             portal.emit(event, data)
-
-    # TODO: emit message
-    # TODO: exec command
-    # TODO: command builder

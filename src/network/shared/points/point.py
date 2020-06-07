@@ -5,10 +5,10 @@ class PointState:
     CONNECTED = 'CONNECTED'
     SEPARATED = 'SEPARATED'
 
-# class Connections: # TODO:
-#     prev = {}
-#     next = {}
-#     all = {}
+class Connections:
+    prev = {}
+    next = {}
+    all = {}
 
 class Point:
     """Point of network."""
@@ -27,7 +27,7 @@ class Point:
 
     @property
     def is_connected(self) -> bool:
-        return bool(len(self.__connections))
+        return bool(len(self._connections.all))
 
     @property
     def is_separated(self) -> bool:
@@ -37,11 +37,8 @@ class Point:
         super().__init__(*args, **kwargs)
         self.__name = name
         self.__uuid = uuid4()
-        # TODO: connections {next, prev, all}
-        self.__next = {} # TODO: если открою будет не безопасно
-        self.__prev = {} # TODO: если открою будет не безопасно
-        self.__connections = {} # TODO: если открою будет не безопасно
         self.__current_state = None
+        self._connections = Connections()
 
     def __str__(self) -> str:
         return f'{self.__name}({self.__uuid})' if self.__name else self.__uuid
@@ -69,21 +66,21 @@ class Point:
 
     def has_connection(self, point: Union[Point, str]) -> bool:
         """Return True if connected with point otherwise False."""
-        return point in self.__connections
+        return point in self._connections.all
 
     def get_point(self, uuid: str) -> Union[Point, None]:
         """Return point if there is connection with point otherwise None."""
-        if uuid in self.__connections:
-            return self.__connections[uuid]
+        if uuid in self._connections.all:
+            return self._connections.all[uuid]
 
         return None
 
     def connect(self, point: Point, max_points: int = 0) -> Point:
         """Add connection with point."""
         if not self.has_connection(point):
-            self.__connections[point] = point
-            self.__next[point] = point
-            point.__prev[self] = self
+            self._connections.all[point] = point
+            self._connections.next[point] = point
+            point._connections.prev[self] = self
 
             self.strengthen(point, max_points)
             self.check_connections()
@@ -95,22 +92,22 @@ class Point:
             point = self.get_point(point)
 
         if self.has_connection(point):
-            del self.__connections[point]
+            del self._connections.all[point]
 
-            if point in self.__prev:
-                del self.__prev[point]
-                del point.__next[self]
+            if point in self._connections.prev:
+                del self._connections.prev[point]
+                del point._connections.next[self]
 
-            if point in self.__next:
-                del self.__next[point]
-                del point.__prev[self]
+            if point in self._connections.next:
+                del self._connections.next[point]
+                del point._connections.prev[self]
 
             self.check_connections()
         return self
 
     def separate(self) -> Point:
         """Disconnect from all connections."""
-        for point in self.__connections.values():
+        for point in self._connections.all.values():
             self.disconnect(point)
 
         return self
@@ -128,7 +125,7 @@ class Point:
 
     def strengthen(self, point: Point, max_points: int) -> None:
         """Add adjacent points to current point from given point."""
-        for point in point.__next.values()[:max_points]:
+        for point in point._connections.next.values()[:max_points]:
             self.connect(point)
 
 # TODO: single exec

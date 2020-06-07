@@ -69,15 +69,6 @@ class Network(Point):
     def __get_connection_point(self) -> Point:
         return self.__current_pipe if self.__current_pipe else self.__current_node
 
-    # TODO: def restart
-    # TODO: def kill
-
-# TODO: if network has name add as other network --- bad idia
-# TODO: if node has name add to main nodes --- bad idia
-
-# TODO: handle if inner network or outer one
-# TODO: change scope and add name
-
 
 # TODO: если несколько разных точек свфяязанно с другой сетью и я говорю останоиться как быть? родителей считать? и они же другую сеть остановят
 # TODO: если какой-то участок цепи падает, остальной должен регенерировать и не падать
@@ -88,3 +79,4 @@ class Network(Point):
 
  # point1.move(point1, save_releshionship?)
  # add builder functions
+ # TODO: add library 'templates'

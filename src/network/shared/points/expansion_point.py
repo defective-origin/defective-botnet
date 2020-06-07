@@ -16,14 +16,14 @@ class ExpansionPoint(Point):
         subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
         importlib.import_module(package_name)
 
-    def download(self, url: str, path: str, protocol: str) -> Point:
+    def download(self, url: str, path: str, protocol: str) -> Point: # TODO: point, points, names_of_points
         """Download point as file."""
         wget.download(url, path)
         # TODO: wget or curl
         # TODO: points from internet(file, ftps, https, socket, github) and connect to this point
         # TODO: secure (login pass, ...)
 
-    def expand(self, file_path: str) -> Point:
+    def expand(self, file_path: str, is_config_file_path: bool = False) -> Point:
         """Load point from file and connect with current point."""
     # TODO: init and connect point from file(that was saved via downloading)
 

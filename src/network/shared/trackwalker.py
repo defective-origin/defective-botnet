@@ -3,7 +3,13 @@ from typing import TypeVar, Generic, Callable, Union
 EnvironmentType = TypeVar('EnvironmentType')
 
 class Trackwalker(Generic[EnvironmentType]):
-    __environment = None # TODO: how to connnect with point? # TODO: если открою будет не безопасно
+    """
+        # TODO: DOC this strategies
+        стратегии обхода
+        1) передавать стор чтобы в 1 стор писался весь отчет
+        2) строить каждомуц свой стор чтобы они в общий сбрасывали
+    """
+    _environment = None
 
     def __environment__(self, environment: EnvironmentType) -> EnvironmentType:
         """Change environment for children points."""
@@ -44,7 +50,7 @@ class Trackwalker(Generic[EnvironmentType]):
 
     def build_environment(self, environment: EnvironmentType, rebuild: bool = False):
         """Build or rebuild environment."""
-        if not self.__environment or rebuild:
+        if not self._environment or rebuild:
             self.__environment__(environment)
 
     async def exec(self, error: Union[Exception, None] = None, environment: Union[EnvironmentType, None] = None) -> None:
@@ -53,7 +59,7 @@ class Trackwalker(Generic[EnvironmentType]):
         if environment:
             environment = self.__environment__(environment)
         else:
-            environment = self.__environment
+            environment = self._environment
 
         next = self.__trackfinder__(environment)
         try:
@@ -83,8 +89,3 @@ class Trackwalker(Generic[EnvironmentType]):
 #             for point in self._connections.values():
 #                 point.exec(error)
 #         return next
-
-# TODO: DOC this strategies
-# стратегии обхода
-# 1) передавать стор чтобы в 1 стор писался весь отчет
-# 2) сохранять каждомуц свой стор чтобы они в общий сбрасывали

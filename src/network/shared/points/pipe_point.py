@@ -1,6 +1,6 @@
 from .point import Point
 
-class PipePoint(Point): # TODO: network?
+class PipePoint(Point):
     """Связывает в жёсткий конвеер."""
     __pipe = []
 
@@ -35,6 +35,5 @@ class PipePoint(Point): # TODO: network?
 
 
 # TODO: send the scope to children
-# TODO:
 #prev points \._._._._._._./next points
 #            /             \
