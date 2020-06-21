@@ -1,6 +1,10 @@
 class Launcher:
     __is_enabled = False
 
+    # It must be redefined in the inherited class
+    _ENABLE_ON_INIT = False
+    _DISABLE_ON_DESTROY = True
+
     @property
     def is_enabled(self) -> bool:
         return self.__is_enabled
@@ -9,10 +13,16 @@ class Launcher:
     def is_disabled(self) -> bool:
         return not self.__is_enabled
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        if self._ENABLE_ON_INIT:
+            self.enable()
+
     def __del__(self) -> None:
         super().__del__()
-        if self.__is_enabled:
-            self.__disable__(self.__scope)
+        if self._DISABLE_ON_DESTROY:
+            self.disable()
 
     def __enable__(self) -> None:
         """Is called to run execution."""

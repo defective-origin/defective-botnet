@@ -80,3 +80,4 @@ class Network(Point):
  # point1.move(point1, save_releshionship?)
  # add builder functions
  # TODO: add library 'templates'
+ # TODO: make one flask server for all points?

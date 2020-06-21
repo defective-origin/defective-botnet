@@ -3,6 +3,10 @@ from datetime import datetime
 class BackupManager:
     """Serves to save and load the state of the object."""
 
+    # It must be redefined in the inherited class
+    _LOAD_ON_INIT = False
+    _DUMP_ON_DESTROY = True
+
     @property
     def last_load(self) -> datetime:
         return self.__last_load
@@ -16,11 +20,13 @@ class BackupManager:
         self.__last_load = None
         self.__last_dump = None
 
-        self.load()
+        if self._LOAD_ON_INIT:
+            self.load()
 
     def __del__(self) -> None:
         super().__del__()
-        self.__dump__(self.__last_dump)
+        if self._DUMP_ON_DESTROY:
+            self.dump()
 
     def __load__(self, last_call: datetime) -> bool:
         """Load data from any resource. Return True if loading is success otherwise False."""

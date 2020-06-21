@@ -70,13 +70,10 @@ class Point:
 
     def get_point(self, uuid: str) -> Union[Point, None]:
         """Return point if there is connection with point otherwise None."""
-        if uuid in self._connections.all:
-            return self._connections.all[uuid]
-
-        return None
+        return self._connections.all.get(uuid, None)
 
     def connect(self, point: Point, max_points: int = 0) -> Point:
-        """Add connection with point."""
+        """Connection with point."""
         if not self.has_connection(point):
             self._connections.all[point] = point
             self._connections.next[point] = point
@@ -86,10 +83,8 @@ class Point:
             self.check_connections()
         return self
 
-    def disconnect(self, point: Union[Point, str]) -> Point:
+    def disconnect(self, point: Point) -> Point:
         """Disconnect from point."""
-        if isinstance(point, str):
-            point = self.get_point(point)
 
         if self.has_connection(point):
             del self._connections.all[point]
@@ -121,12 +116,16 @@ class Point:
             self.__separated__()
             self.__current_state = PointState.SEPARATED
 
-    def look(self, data: Any) -> bool: pass # TODO: __look__
+    def look(self, data: Any) -> bool: pass # TODO: __look__ or __check__
 
-    def strengthen(self, point: Point, max_points: int) -> None:
-        """Add adjacent points to current point from given point."""
-        for point in point._connections.next.values()[:max_points]:
+    def strengthen(self, point: Point, max_points: int = 0) -> Point:
+        """Add next points from given point to current point. By default all next points of given point."""
+        next_connection = point._connections.next.values()
+        max_points = max_points if max_points else len(next_connection)
+        for point in next_connection[:max_points]:
             self.connect(point)
+        
+        return self
 
 # TODO: single exec
 # TODO: point.look(data) -> boold типо если вернёт False мне точно туда ненадо?
