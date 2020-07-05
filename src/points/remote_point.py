@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from .point import Point
-from ..portal_manager import PortalManager
+from ..managers.portal_manager import PortalManager
 
 class RemotePoint(Point, PortalManager):
     """Connect to remote point."""
@@ -10,9 +10,9 @@ class RemotePoint(Point, PortalManager):
 
     def __commander__(self, register: Callable) -> None:
         """Add handlers of the data emitted from portals."""
-        register('connections', self.on_connections)
+        register('connections', self.__on_connections)
 
-    def on_connections(self) -> Any:
+    def __on_connections(self) -> Any:
         max_points = request.get_json().max_points
         connections = self._portals[:max_points]
         return jsonify({ 'connections': connections })

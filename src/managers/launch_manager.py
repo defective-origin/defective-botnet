@@ -1,4 +1,4 @@
-class Launcher:
+class LaunchManager:
     __is_enabled = False
 
     # It must be redefined in the inherited class

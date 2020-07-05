@@ -3,13 +3,6 @@ from typing import TypeVar, Generic, Callable, Union
 EnvironmentType = TypeVar('EnvironmentType')
 
 class Trackwalker(Generic[EnvironmentType]):
-    """
-        # TODO: DOC this strategies
-        стратегии обхода
-        1) передавать стор чтобы в 1 стор писался весь отчет
-        2) строить каждомуц свой стор чтобы они в общий сбрасывали
-        3) одиночное выполнение
-    """
     _environment = None
 
     def __environment__(self, environment: EnvironmentType) -> EnvironmentType:
@@ -55,7 +48,13 @@ class Trackwalker(Generic[EnvironmentType]):
             self.__environment__(environment)
 
     async def exec(self, error: Union[Exception, None] = None, environment: Union[EnvironmentType, None] = None) -> None:
-        """Execute handlers."""
+        """
+            Execute handlers.
+            
+            Tree traversal strategies:
+            1) If the environment is transferred then it will be used it
+            2) If the environment is built before execution then it will be used it
+        """
 
         if environment:
             environment = self.__environment__(environment)
@@ -74,19 +73,3 @@ class Trackwalker(Generic[EnvironmentType]):
             self.__completed__(environment)
         finally:
             self.__finally__(environment)
-
-# class WaterfallTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
-#     def __tracker__(self, environment: EnvironmentType) -> Callable:
-#         """Create next function built with execution next points."""
-#         def next(error: Exception = None):
-#             for point in self._next.values():
-#                 point.exec(error, environment)
-#         return next
-
-# class BroadcastTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
-#     def __tracker__(self, environment: EnvironmentType) -> Callable:
-#         """Create next function built with execution next points."""
-#         def next(error: Exception = None):
-#             for point in self._connections.values():
-#                 point.exec(error)
-#         return next

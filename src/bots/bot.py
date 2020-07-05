@@ -44,6 +44,25 @@ class Bot(Point, Launcher, WaterfallExecutor[Scope]):
 
         super().exec(error, self.__scope, self.__next, self.__prev)
 
+    def look(self, data: Any) -> bool: pass # TODO: __look__ or __check__
 # TODO: emit back to parent?
 # TODO: if point is not connected with anything call __one__ by default destruct?
 # if scope exist dont cill him? or let him get data from network scope himself
+
+
+
+# class WaterfallTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
+#     def __tracker__(self, environment: EnvironmentType) -> Callable:
+#         """Create next function built with execution next points."""
+#         def next(error: Exception = None):
+#             for point in self._next.values():
+#                 point.exec(error, environment)
+#         return next
+
+# class BroadcastTrackwalker(Generic[EnvironmentType], Point, Trackwalker[EnvironmentType]):
+#     def __tracker__(self, environment: EnvironmentType) -> Callable:
+#         """Create next function built with execution next points."""
+#         def next(error: Exception = None):
+#             for point in self._connections.values():
+#                 point.exec(error)
+#         return next

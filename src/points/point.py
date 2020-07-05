@@ -116,8 +116,6 @@ class Point:
             self.__separated__()
             self.__current_state = PointState.SEPARATED
 
-    def look(self, data: Any) -> bool: pass # TODO: __look__ or __check__
-
     def strengthen(self, point: Point, max_points: int = 0) -> Point:
         """Add next points from given point to current point. By default all next points of given point."""
         next_connection = point._connections.next.values()
@@ -126,8 +124,3 @@ class Point:
             self.connect(point)
         
         return self
-
-# TODO: single exec
-# TODO: point.look(data) -> boold типо если вернёт False мне точно туда ненадо?
-# TODO: save as json? при этом сохраняет связи для сбора с бэкапа сети
-# TODO: call certain bots from the network
