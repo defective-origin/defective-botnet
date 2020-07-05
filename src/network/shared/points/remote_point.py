@@ -1,6 +1,6 @@
+from flask import jsonify, request
 from .point import Point
 from ..portal_manager import PortalManager
-import socketio
 
 class RemotePoint(Point, PortalManager):
     """Connect to remote point."""
@@ -10,37 +10,40 @@ class RemotePoint(Point, PortalManager):
 
     def __commander__(self, register: Callable) -> None:
         """Add handlers of the data emitted from portals."""
-        register('get connections', lambda: super().emit('strengthen', { 'urls': self.__sockets.keys() })) # TODO: set url
-        register('strengthen', lambda urls: map(lambda url: super().open(url), urls)) # TODO
+        register('connections', self.on_connections)
+
+    def on_connections(self) -> Any:
+        max_points = request.get_json().max_points
+        connections = self._portals[:max_points]
+        return jsonify({ 'connections': connections })
 
     def connect(self, point: [Point, str], max_points: int = 0) -> RemotePoint:
         """Connection with local or remote point."""
         if isinstance(point, str):
-            self.open(point)
-            self.strengthen(point, max_points) # TODO: he can be no connected yet
+            self.register(point)
+            self.strengthen(point, max_points)
         else:
             super().connect(point, max_points)
-            super().strengthen(point, max_points)
+        return self
 
     def disconnect(self, point: [Point, str]) -> RemotePoint:
         """Disconnect from local or remote point."""
         if isinstance(point, str):
-            self.close(point)
+            self.unregister(point)
         else:
             super().disconnect(point)
+        return self
 
     def strengthen(self, point: [Point, str], max_points: int = 0) -> RemotePoint:
-        """
-            If given an url then connect to remote poits
-            that is connected with repote point otherwise
-            Add next points from given point to current point.
-            By default all next points of given point.
-        """
+        """Strengthen local or remote point."""
         if isinstance(point, str):
-            self.emit('get connections', { 'max_points': max_points })
+            if max_points > 0:
+                json = { 'max_points': max_points }
+                self.send(point, 'connections', json, self.__strengthen_remote_point)
         else:
             super().strengthen(point, max_points)
-    
-    # yа ините запустить сервер и пытаться постоянно подключаться при потере соединения
-    # на деструкторе отключать сервер
-    # TODO: объединить с точкой расширения?
+        return self
+
+    def __strengthen_remote_point(self, json: Any) -> None:
+        for url in json.connections:
+            self.register(url)

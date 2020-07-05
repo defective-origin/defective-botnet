@@ -1,6 +1,6 @@
 from .point import Point
 
-class NetworkPoint(Point):
+class NetworkPoint(Point): # TODO: inherit from remotePoint?
     """Combine points to one network point."""
     @staticmethod
     def is_network_point(point: Point) -> bool:
@@ -67,5 +67,3 @@ class NetworkPoint(Point):
             return self.__points[uuid]
 
         return None
-
-# TODO: connect via decorator? @connect(name)     combine(builder1, builder2 ...)

@@ -1,6 +1,3 @@
-
-# TODO: work with dict, object and other, json
-# parse json becouse of json response
 class Object(dict):
     def __setitem__(self, attr: str, value: Any) -> None:
         self.__setattr__(attr, value)
