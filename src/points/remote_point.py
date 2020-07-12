@@ -2,15 +2,15 @@ from flask import jsonify, request
 from .point import Point
 from ..managers.portal_manager import PortalManager
 
+class Events:
+    CONNECTIONS: 'CONNECTIONS'
+
 class RemotePoint(Point, PortalManager):
     """Connect to remote point."""
-    @staticmethod
-    def is_remote_point(point: Point) -> bool:
-        return isinstance(point, RemotePoint)
 
     def __commander__(self, register: Callable) -> None:
         """Add handlers of the data emitted from portals."""
-        register('connections', self.__on_connections)
+        register(Events.CONNECTIONS, self.__on_connections)
 
     def __on_connections(self) -> Any:
         max_points = request.get_json().max_points
@@ -39,7 +39,7 @@ class RemotePoint(Point, PortalManager):
         if isinstance(point, str):
             if max_points > 0:
                 json = { 'max_points': max_points }
-                self.send(point, 'connections', json, self.__strengthen_remote_point)
+                self.send(point, Events.CONNECTIONS, json, self.__strengthen_remote_point)
         else:
             super().strengthen(point, max_points)
         return self

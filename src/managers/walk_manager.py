@@ -2,7 +2,7 @@ from typing import TypeVar, Generic, Callable, Union
 
 EnvironmentType = TypeVar('EnvironmentType')
 
-class Trackwalker(Generic[EnvironmentType]):
+class WalkManager(Generic[EnvironmentType]):
     _environment = None
 
     def __environment__(self, environment: EnvironmentType) -> EnvironmentType:

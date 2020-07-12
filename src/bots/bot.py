@@ -1,11 +1,10 @@
 from typing import Dict, Callable
-from .shared.point import Point
-from .shared.launcher import Launcher
-from .shared.executor import WaterfallExecutor
+from ..points.point import Point
+from ..managers.launch_manager import LaunchManager
+from ..managers.walk_manager import WalkManager
 from ..scope import Scope
-import uuid
 
-class Bot(Point, Launcher, WaterfallExecutor[Scope]):
+class Bot(Point, LaunchManager, WalkManager):
     """
         Point of network. By default work as spread point.
     """
@@ -44,10 +43,10 @@ class Bot(Point, Launcher, WaterfallExecutor[Scope]):
 
         super().exec(error, self.__scope, self.__next, self.__prev)
 
-    def look(self, data: Any) -> bool: pass # TODO: __look__ or __check__
-# TODO: emit back to parent?
-# TODO: if point is not connected with anything call __one__ by default destruct?
-# if scope exist dont cill him? or let him get data from network scope himself
+    def look(self, data: Any) -> bool: pass
+    
+    
+     # TODO: __look__ or __check__
 
 
 

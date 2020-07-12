@@ -1,7 +1,7 @@
 from .point import Point
 from ..scope import Scope
 # TODO: fix documentation in all files
-class Network(Point):
+class Network(Point): # TODO: inherit from remotePoint?
     """
         Network builder.
     """

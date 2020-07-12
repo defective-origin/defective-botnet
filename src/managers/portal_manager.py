@@ -1,8 +1,13 @@
 from typing import Union, Dict, Callable
-from .launcher import Launcher
+from .launch_manager import Launcher
 from multiprocessing import Process
 from flask import Flask, request
 import requests
+
+class Events:
+    REGISTER: 'REGISTER'
+    UNREGISTER: 'UNREGISTER'
+
 
 class PortalManager(Launcher):
     _portals = []
@@ -28,8 +33,8 @@ class PortalManager(Launcher):
         super().__enable__()
 
         self.__server = Flask()
-        self.__register_handler('register', lambda: self.register(request.get_json().url))
-        self.__register_handler('unregister', lambda: self.unregister(request.get_json().url))
+        self.__register_handler(Events.REGISTER, lambda: self.register(request.get_json().url))
+        self.__register_handler(Events.UNREGISTER, lambda: self.unregister(request.get_json().url))
         self.__commander__(self.__register_handler)
 
         kwargs = { 'host': self._HOST, 'port': self._PORT }
@@ -38,14 +43,14 @@ class PortalManager(Launcher):
 
         if self._CONNECT_PORTALS_ON_ENABLE:
             json = { 'url': self.server_url }
-            self.spread('register', json)
+            self.spread(Events.REGISTER, json)
 
     def __disable__(self) -> None:
         super().__disable__()
 
         if self._DISCONNECT_PORTALS_ON_DISABLE:
             json = { 'url': self.server_url }
-            self.spread('unregister', json)
+            self.spread(Events.UNREGISTER, json)
 
         self.__server_process.terminate()
         self.__server_process.join()
@@ -55,14 +60,14 @@ class PortalManager(Launcher):
         if url not in self._portals and self.server_url != url:
             self._portals.append(url)
             json = { 'url': self.server_url }
-            self.send(url, 'register', json)
+            self.send(url, Events.REGISTER, json)
 
     def unregister(self, url: str) -> PortalManager:
         """Unregister remote portal."""
         if url in self._portals:
             self._portals.remove(url)
             json = { 'url': self.server_url }
-            self.send(url, 'unregister', json)
+            self.send(url, Events.UNREGISTER, json)
 
     def spread(self, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> PortalManager:
         """Send json data to all registered portals."""

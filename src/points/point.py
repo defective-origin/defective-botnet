@@ -13,10 +13,6 @@ class Connections:
 class Point:
     """Point of network."""
 
-    @staticmethod
-    def is_point(point: Point) -> bool:
-        return isinstance(point, Point)
-
     @property
     def name(self) -> str:
         return self.__name

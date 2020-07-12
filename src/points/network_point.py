@@ -1,10 +1,11 @@
 from .point import Point
 
-class NetworkPoint(Point): # TODO: inherit from remotePoint?
+class NetworkPoint(Point):
     """Combine points to one network point."""
+
     @staticmethod
-    def is_network_point(point: Point) -> bool:
-        return isinstance(point, NetworkPoint)
+    def is_point(point: Point) -> bool:
+        return isinstance(point, Point)
 
     def __init__(self, *args, core: Point = Point(), name: str = '', **kwargs) -> None:
         super().__init__(name, *args, **kwargs)
