@@ -13,6 +13,10 @@ class Connections:
 class Point:
     """Point of network."""
 
+    @staticmethod
+    def is_point(point: Point) -> bool:
+        return isinstance(point, Point)
+
     @property
     def name(self) -> str:
         return self.__name
@@ -68,7 +72,7 @@ class Point:
         """Return point if there is connection with point otherwise None."""
         return self._connections.all.get(uuid, None)
 
-    def connect(self, point: Point, max_points: int = 0) -> Point:
+    def connect(self, point: Point, max_points: int = 0) -> None:
         """Connection with point."""
         if not self.has_connection(point):
             self._connections.all[point] = point
@@ -77,9 +81,8 @@ class Point:
 
             self.strengthen(point, max_points)
             self.check_connections()
-        return self
 
-    def disconnect(self, point: Point) -> Point:
+    def disconnect(self, point: Point) -> None:
         """Disconnect from point."""
 
         if self.has_connection(point):
@@ -94,14 +97,11 @@ class Point:
                 del point._connections.prev[self]
 
             self.check_connections()
-        return self
 
-    def separate(self) -> Point:
+    def separate(self) -> None:
         """Disconnect from all connections."""
         for point in self._connections.all.values():
             self.disconnect(point)
-
-        return self
 
     def check_connections(self) -> None:
         """Check if point is connected to another point."""
@@ -112,11 +112,9 @@ class Point:
             self.__separated__()
             self.__current_state = PointState.SEPARATED
 
-    def strengthen(self, point: Point, max_points: int = 0) -> Point:
+    def strengthen(self, point: Point, max_points: int = 0) -> None:
         """Add next points from given point to current point. By default all next points of given point."""
         next_connection = point._connections.next.values()
         max_points = max_points if max_points else len(next_connection)
         for point in next_connection[:max_points]:
             self.connect(point)
-        
-        return self
