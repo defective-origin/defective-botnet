@@ -1,75 +1,71 @@
 from typing import TypeVar, Generic, Callable, Union
 
-EnvironmentType = TypeVar('EnvironmentType')
+StoreType = TypeVar('StoreType')
 
-class WalkManager(Generic[EnvironmentType]):
-    _environment = None
+class WalkManager(Generic[StoreType]):
+    _store = None
 
-    def __environment__(self, environment: EnvironmentType) -> EnvironmentType:
-        """Change environment for children points."""
-        return environment
+    def __store__(self, store: StoreType) -> StoreType:
+        """Change store for children points."""
+        return store
 
-    def __trackfinder__(self, environment: EnvironmentType) -> Callable:
+    def __trackwalker__(self, received_store: StoreType) -> Callable:
         """Create next function built with execution next points."""
         pass
 
-    def __exec__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
+    def __exec__(self, error: Exception, store: StoreType, next: Callable) -> None:
         """
             Is called when previous point don't raise error.
             By default call broadcast function.
         """
-        next()
+        next(error, store)
 
-    def __catch__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
+    def __catch__(self, error: Exception, store: StoreType, next: Callable) -> None:
         """
             Is called when previous point raise error.
             By default call broadcast function.
         """
-        next()
+        next(error, store)
 
-    def __failed__(self, error: Exception, environment: EnvironmentType, next: Callable) -> None:
+    def __failed__(self, error: Exception, store: StoreType, next: Callable) -> None:
         """
             Is called when current point raise error.
             By default call broadcast function.
         """
-        next()
+        next(error, store)
 
-    def __completed__(self, environment: EnvironmentType) -> None:
+    def __completed__(self, store: StoreType) -> None:
         """Is called when error is not raised in current execution."""
         pass
 
-    def __finally__(self, environment: EnvironmentType) -> None:
+    def __finally__(self, store: StoreType) -> None:
         """Is called all time after point is handled."""
         pass
 
-    def build_environment(self, environment: EnvironmentType, rebuild: bool = False):
-        """Build or rebuild environment."""
-        if not self._environment or rebuild:
-            self.__environment__(environment)
+    def build_store(self, store: StoreType, rebuild: bool = False) -> None:
+        """Build or rebuild store."""
+        if not self._store or rebuild:
+            self._store = self.__store__(store)
 
-    async def exec(self, error: Union[Exception, None] = None, environment: Union[EnvironmentType, None] = None) -> None:
+    async def exec(self, error: Union[Exception, None] = None, store: Union[StoreType, None] = None) -> None:
         """
-            Execute handlers.
+            Run point handlers and start a chain reaction of execution.
             
             Tree traversal strategies:
-            1) If the environment is transferred then it will be used it
-            2) If the environment is built before execution then it will be used it
+            1) If the store is transferred then it will be used it
+            2) If the store is built before execution then it will be used it
         """
 
-        if environment:
-            environment = self.__environment__(environment)
-        else:
-            environment = self._environment
-
-        next = self.__trackfinder__(environment)
+        next = self.__trackwalker__(store)
+        store = self.__store__(store) if store else self._store
         try:
             if error:
-                self.__catch__(error, environment, next)
+                self.__catch__(error, store, next)
             else:
-                self.__exec__(error, environment, next)
+                self.__exec__(error, store, next)
         except Exception as catched_error:
-            self.__failed__(catched_error, environment, next)
+            self.__failed__(catched_error, store, next)
         else:
-            self.__completed__(environment)
+            self.__completed__(store)
         finally:
-            self.__finally__(environment)
+            self.__finally__(store)

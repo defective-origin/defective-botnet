@@ -1,5 +1,5 @@
 from typing import Union, Dict, Callable
-from .launch_manager import Launcher
+from .launch_manager import LaunchManager
 from multiprocessing import Process
 from flask import Flask, request
 import requests
@@ -8,8 +8,7 @@ class Events:
     REGISTER: 'REGISTER'
     UNREGISTER: 'UNREGISTER'
 
-
-class PortalManager(Launcher):
+class RemoteCommandManager(LaunchManager):
     _portals = []
     __server = None
     __server_process = None
@@ -55,26 +54,26 @@ class PortalManager(Launcher):
         self.__server_process.terminate()
         self.__server_process.join()
 
-    def register(self, url: str) -> PortalManager:
+    def register(self, url: str) -> None:
         """Register remote portal."""
         if url not in self._portals and self.server_url != url:
             self._portals.append(url)
             json = { 'url': self.server_url }
             self.send(url, Events.REGISTER, json)
 
-    def unregister(self, url: str) -> PortalManager:
+    def unregister(self, url: str) -> None:
         """Unregister remote portal."""
         if url in self._portals:
             self._portals.remove(url)
             json = { 'url': self.server_url }
             self.send(url, Events.UNREGISTER, json)
 
-    def spread(self, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> PortalManager:
+    def spread(self, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> None:
         """Send json data to all registered portals."""
         for portal in self._portals:
             self.send(portal, event, json)
 
-    def send(self, url: str, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> PortalManager:
+    def send(self, url: str, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> None:
         """Send json data to one portal."""
         response = requests.post(f'{url}/{event}', json=json)
         if not handler:
