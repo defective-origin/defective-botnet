@@ -71,7 +71,7 @@ class RemoteCommandManager(LaunchManager):
     def spread(self, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> None:
         """Send json data to all registered portals."""
         for portal in self._portals:
-            self.send(portal, event, json)
+            self.send(portal, event, json, handler)
 
     def send(self, url: str, event: str, json: Union[str, bytes, dict, list] = {}, handler: Callable = None) -> None:
         """Send json data to one portal."""

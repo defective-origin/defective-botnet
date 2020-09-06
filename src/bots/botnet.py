@@ -1,10 +1,10 @@
 from typing import TypeVar, Callable, Union
 from .bot import Bot
-from ..points.network_point import Network
+from ..points.network_point import NetworkPoint
 
 StoreType = TypeVar('StoreType')
 
-class Botnet(Bot, Network): # TODO: inherit from remotePoint?
+class Botnet(Bot, NetworkPoint):
 
     def __enable__(self) -> None:
         super().__enable__()
@@ -22,9 +22,10 @@ class Botnet(Bot, Network): # TODO: inherit from remotePoint?
             self._core.exec(error, store)
         return next
 
-    def build_store(self, store: StoreType, rebuild: bool = False) -> None: # TODO: call children building
-        if not self._store or rebuild:
-            self._store = self.__store__(store)
+    def build_store(self, store: StoreType, rebuild: bool = False) -> None:
+        super().build_store(store, rebuild)
+        for point in self._points.values():
+            point.build_store(self._store, rebuild)
 
 # TODO: если какой-то участок цепи падает, остальной должен регенерировать и не падать
 

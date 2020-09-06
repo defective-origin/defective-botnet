@@ -10,6 +10,7 @@ class RemotePoint(Point, RemoteCommandManager):
 
     def __commander__(self, register: Callable) -> None:
         """Add handlers of the data emitted from portals."""
+        super().__commander__(register)
         register(Events.CONNECTIONS, self.__on_connections)
 
     def __on_connections(self) -> Any:

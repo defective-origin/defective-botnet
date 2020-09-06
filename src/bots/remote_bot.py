@@ -4,14 +4,16 @@ from ..points.remote_point import RemotePoint
 
 StoreType = TypeVar('StoreType')
 
+class Events:
+    EXEC: 'EXEC'
+
 class RemoteBot(Bot, RemotePoint):
 
-    def __trackwalker__(self, received_store: StoreType) -> Callable:
-        def next(error: Union[Exception, None] = None, store: Union[StoreType, None] = None):
-            super().__trackwalker__()(error, store)
-            self._core.exec(error, store)
-        return next
+    def __commander__(self, register: Callable) -> None:
+        super().__commander__(register)
+        register(Events.EXEC, super().exec)
 
-    def exec(self, error: Union[Exception, None] = None, store: Union[StoreType, None] = None) -> None: # TODO: call remote exec
+    def exec(self, error: Union[Exception, None] = None, store: Union[StoreType, None] = None) -> None:
         if self.is_enabled:
+            self.spread(Events.EXEC) # TODO: send changed data
             super().exec(error, store)
