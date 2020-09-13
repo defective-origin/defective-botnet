@@ -30,9 +30,11 @@ class BackupManager:
 
     def __load__(self, last_call: datetime) -> bool:
         """Load data from any resource. Return True if loading is success otherwise False."""
+        return True
 
     def __dump__(self, last_call: datetime) -> bool:
         """Dump data to any resource. Return True if dumping is success otherwise False."""
+        return True
 
     async def load(self) -> None:
         """Load data from any resource."""

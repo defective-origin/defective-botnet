@@ -5,7 +5,7 @@ from ..managers.walk_manager import WalkManager
 
 StoreType = TypeVar('StoreType')
 
-class Bot(Generic[StoreType], Point, LaunchManager, WalkManager): # TODO: add other managers
+class Bot(Generic[StoreType], Point, LaunchManager, WalkManager):
     """Bot of botnet. By default work as spread point."""
 
     def __trackwalker__(self, received_store: StoreType) -> Callable:
