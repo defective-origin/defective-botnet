@@ -1,4 +1,4 @@
-class Object(dict):
+class SuperObject(dict):
     def __setitem__(self, attr: str, value: Any) -> None:
         self.__setattr__(attr, value)
     

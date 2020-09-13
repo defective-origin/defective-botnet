@@ -1,9 +1,9 @@
-from .object import Object
+from .object import SuperObject
 from .constants import Operation
 from ..event.event_emitter import EventEmitter
 from uuid import uuid4
 
-# class Store(Object, EventEmmiter):
+# class Store(SuperObject, EventEmmiter):
 #     def __setitem__(self, attr: str, value: Any) -> None:
 #         self.__setattr__(attr, value)
 
@@ -19,7 +19,7 @@ from uuid import uuid4
 #         super().__delattr__(attr)
 # # TODO add subscription
 # TODO: as NGXS only without static methods
-# class Store(Object): # TODO: change name?
+# class Store(SuperObject): # TODO: change name?
 #     NAME = uuid4()
 #     DEFAULT = None
 
