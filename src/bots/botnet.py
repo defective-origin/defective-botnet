@@ -27,6 +27,6 @@ class Botnet(Bot, NetworkPoint):
         for point in self._points.values():
             point.build_store(self._store, rebuild)
 
-# TODO: если какой-то участок цепи падает, остальной должен регенерировать и не падать
+# TODO: if any point of chain breaks another must regenerate the chain
 
  # TODO: fix documentation in all files
