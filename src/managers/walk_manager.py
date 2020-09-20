@@ -11,7 +11,7 @@ class WalkManager(Generic[StoreType]):
 
     def __trackwalker__(self, received_store: StoreType) -> Callable:
         """Create next function built with execution next points."""
-        pass
+        return lambda: None
 
     def __exec__(self, error: Exception, store: StoreType, next: Callable) -> None:
         """
@@ -57,15 +57,22 @@ class WalkManager(Generic[StoreType]):
         """
 
         next = self.__trackwalker__(store)
-        store = self.__store__(store) if store else self._store
+        store = self.__select_store(store)
         try:
             if error:
                 self.__catch__(error, store, next)
             else:
                 self.__exec__(error, store, next)
-        except Exception as catched_error:
-            self.__failed__(catched_error, store, next)
+        except Exception as caught_error:
+            self.__failed__(caught_error, store, next)
         else:
             self.__completed__(store)
         finally:
             self.__finally__(store)
+
+    def __select_store(self, store: Union[StoreType, None] = None) -> Union[StoreType, None]:
+        """
+            Return own store if the store is not transferred,
+            otherwise received store.
+        """
+        return self.__store__(store) if store else self._store
