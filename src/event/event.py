@@ -1,4 +1,5 @@
-from typing import Callable, List
+from __future__ import annotations
+from typing import Callable, List, Union
 from .base_event import BaseEvent
 from .action import Action
 
@@ -10,7 +11,7 @@ class Event(BaseEvent):
         """Add unlimited action."""
         return self.once(None, callback)
 
-    def once(self, times: int, callback: Callable) -> Event:
+    def once(self, times: Union[int, None], callback: Callable) -> Event:
         """Add limited action."""
         action = Action(times, callback)
         self.__actions[callback] = action

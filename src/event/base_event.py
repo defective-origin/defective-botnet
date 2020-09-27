@@ -1,4 +1,6 @@
-from abc import ABC
+from __future__ import annotations
+from typing import Callable
+from abc import ABC, abstractmethod
 from .action import Action
 
 class BaseEvent:

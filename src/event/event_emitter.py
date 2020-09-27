@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Callable, Union
 from .event import Event
 from .base_event import BaseEvent
