@@ -5,7 +5,7 @@ class BackupManager:
 
     # It must be redefined in the inherited class
     _LOAD_ON_INIT = False
-    _DUMP_ON_DESTROY = True
+    _DUMP_ON_DESTROY = False
 
     @property
     def last_load(self) -> datetime:
@@ -24,7 +24,6 @@ class BackupManager:
             self.load()
 
     def __del__(self) -> None:
-        super().__del__()
         if self._DUMP_ON_DESTROY:
             self.dump()
 

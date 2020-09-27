@@ -20,7 +20,6 @@ class LaunchManager:
             self.enable()
 
     def __del__(self) -> None:
-        super().__del__()
         if self._DISABLE_ON_DESTROY:
             self.disable()
 

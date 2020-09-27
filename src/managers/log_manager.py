@@ -1,32 +1,17 @@
-from typing import Callable, List
-
-class Environment:
-    PRODUCTION = 'PRODUCTION'
-    DEVELOPMENT = 'DEVELOPMENT'
-
 class LogManager:
-    def __init__(self, mode: Environment = Environment.DEVELOPMENT) -> None:
-        self.__is_development_mode = mode == Environment.DEVELOPMENT
-
-    def __log__(self, values: List) -> None: pass
-    def __info__(self, values: List) -> None: pass
-    def __warn__(self, values: List) -> None: pass
-    def __error__(self, values: List) -> None: pass
+    def __log__(self, *args, **kwargs) -> None: pass
+    def __info__(self, *args, **kwargs) -> None: pass
+    def __warn__(self, *args, **kwargs) -> None: pass
+    def __error__(self, *args, **kwargs) -> None: pass
     
-    def log(self, *values: List) -> None:
-        self.__handle_message(self.__log__, values)
+    def log(self, *args, **kwargs) -> None:
+        self.__log__(*args, **kwargs)
 
-    def info(self, *values: List) -> None:
-        self.__handle_message(self.__info__, values)
+    def info(self, *args, **kwargs) -> None:
+        self.__info__(*args, **kwargs)
 
-    def warn(self, *values: List) -> None:
-        self.__handle_message(self.__warn__, values)
+    def warn(self, *args, **kwargs) -> None:
+        self.__warn__(*args, **kwargs)
 
-    def error(self, *values: List) -> None:
-        self.__handle_message(self.__error__, values)
-
-    def __handle_message(self, handler: Callable, values: List):
-        if self.__is_development_mode:
-            print(*values)
-
-        handler(values)
+    def error(self, *args, **kwargs) -> None:
+        self.__error__(*args, **kwargs)
