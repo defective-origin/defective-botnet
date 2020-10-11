@@ -4,9 +4,9 @@ from ..remote_command_manager import RemoteCommandManager
 
 
 class TestRemoteCommandManager(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.remote_command_manager = RemoteCommandManager()
+
+    def setUp(self):
+        self.remote_command_manager = RemoteCommandManager()
 
     def test_server_url(self):
         with self.subTest('should return url'):
@@ -22,7 +22,7 @@ class TestRemoteCommandManager(TestCase):
 
             self.remote_command_manager.spread('TEST EVENT')
 
-            self.assertEqual(self.remote_command_manager.send.call_count, 2)
+            self.assertTrue(self.remote_command_manager.send.called == 2)
 
 if __name__ == '__main__':
     main()

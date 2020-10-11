@@ -4,9 +4,9 @@ from ..launch_manager import LaunchManager
 
 
 class TestLaunchManager(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.launcher = LaunchManager()
+
+    def setUp(self):
+        self.launcher = LaunchManager()
 
     def test__init__(self):
         with self.subTest('should enable if _ENABLE_ON_INIT is True'):
@@ -33,7 +33,7 @@ class TestLaunchManager(TestCase):
 
             self.launcher.enable()
 
-            self.assertTrue(self.launcher.__enable__.is_called)
+            self.assertTrue(self.launcher.__enable__.called == 1)
 
         with self.subTest('should change state'):
             self.launcher._LaunchManager__is_enabled = False
@@ -49,7 +49,7 @@ class TestLaunchManager(TestCase):
 
             self.launcher.disable()
 
-            self.assertTrue(self.launcher.__disable__.is_called)
+            self.assertTrue(self.launcher.__disable__.called == 1)
 
         with self.subTest('should change state'):
             self.launcher._LaunchManager__is_enabled = True
@@ -63,8 +63,10 @@ class TestLaunchManager(TestCase):
             self.launcher.disable = Mock()
             self.launcher.enable = Mock()
 
-            self.assertTrue(self.launcher.disable.is_called)
-            self.assertTrue(self.launcher.enable.is_called)
+            self.launcher.restart()
+
+            self.assertTrue(self.launcher.disable.called == 1)
+            self.assertTrue(self.launcher.enable.called == 1)
 
 if __name__ == '__main__':
     main()

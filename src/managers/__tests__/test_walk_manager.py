@@ -5,9 +5,9 @@ from ..walk_manager import WalkManager
 
 
 class TestWalkManager(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.walker = WalkManager()
+
+    def setUp(self):
+        self.walker = WalkManager()
 
     def test_build_store(self):
         test_store = { 'STORE': 'ORIGIN' }
@@ -41,22 +41,22 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(Exception('TEST'), test_store))
 
-            self.assertTrue(self.walker.__catch__.is_called)
+            self.assertTrue(self.walker.__catch__.called == 1)
 
         with self.subTest('should call __exec__ if error is not transferred'):
             self.walker.__exec__ = Mock()
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__exec__.is_called)
+            self.assertTrue(self.walker.__exec__.called == 1)
 
         with self.subTest('should call __failed__ if error is risen during execution of __catch__'):
             self.walker.__failed__ = Mock()
             self.walker.__catch__ = Mock(side_effect=Exception('TEST'))
 
-            asyncio.run(self.walker.exec(store=test_store))
+            asyncio.run(self.walker.exec(Exception('TEST'), store=test_store))
 
-            self.assertTrue(self.walker.__failed__.is_called)
+            self.assertTrue(self.walker.__failed__.called == 1)
 
         with self.subTest('should call __failed__ if error is risen during execution of __exec__'):
             self.walker.__failed__ = Mock()
@@ -64,14 +64,14 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__failed__.is_not_called)
+            self.assertTrue(self.walker.__failed__.called == 1)
 
         with self.subTest('should call __completed__ if __catch__ or __exec__ executed without error'):
             self.walker.__completed__ = Mock()
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__completed__.is_called)
+            self.assertTrue(self.walker.__completed__.called == 1)
 
         with self.subTest('should not call __completed__ if __catch__ executed with error'):
             self.walker.__completed__ = Mock()
@@ -79,7 +79,7 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__completed__.is_not_called)
+            self.assertTrue(self.walker.__completed__.called == 0)
 
         with self.subTest('should not call __completed__ if __exec__ executed with error'):
             self.walker.__completed__ = Mock()
@@ -87,14 +87,14 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__completed__.is_not_called)
+            self.assertTrue(self.walker.__completed__.called == 0)
 
         with self.subTest('should call __finally__ after all operations if error is risen or not'):
             self.walker.__finally__ = Mock()
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__finally__.is_called)
+            self.assertTrue(self.walker.__finally__.called == 1)
 
         with self.subTest('should call __finally__ even if __catch__ raises error'):
             self.walker.__completed__ = Mock()
@@ -102,7 +102,7 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__finally__.is_called)
+            self.assertTrue(self.walker.__finally__.called == 1)
 
         with self.subTest('should call __finally__ even if __exec__ raises error'):
             self.walker.__completed__ = Mock()
@@ -110,7 +110,7 @@ class TestWalkManager(TestCase):
 
             asyncio.run(self.walker.exec(store=test_store))
 
-            self.assertTrue(self.walker.__finally__.is_called)
+            self.assertTrue(self.walker.__finally__.called == 1)
 
     def test__select_store(self):
         test_store = { 'STORE': 'ORIGIN' }
