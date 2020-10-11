@@ -1,13 +1,6 @@
 # Botnet
 
 ## TODO
-### Event emiter
-| Class Name    | Documentation | Test |
-| ------------- | ------------- | ---- |
-| Action        | partially     | No   |
-| EventEmitter  | partially     | No   |
-| Event         | partially     | No   |
-
 ### Managers
 | Class Name           | Documentation | Test |
 | -------------------- | ------------- | ---- |
